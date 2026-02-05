@@ -14,7 +14,6 @@ def run_xgb_model(data_path, output_path):
     train_df = df[df['date'] < config['models']['train_split_date']].dropna()
     test_df = df[df['date'] >= config['models']['train_split_date']].copy()
     
-    # 使用 config 参数
     model = xgb.XGBRegressor(
         n_estimators=xgb_cfg['n_estimators'],
         max_depth=xgb_cfg['max_depth'],

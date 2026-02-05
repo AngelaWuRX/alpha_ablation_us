@@ -13,7 +13,6 @@ def run_linear_baseline(data_path, output_path):
     train_df = df[df['date'] < split_date].copy()
     test_df = df[df['date'] >= split_date].copy()
     
-    # 计算每个因子的训练集 IC 作为权重
     ic_values = {}
     for col in factor_cols:
         daily_ic = train_df.groupby('date').apply(
