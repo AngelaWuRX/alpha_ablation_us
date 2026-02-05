@@ -1,0 +1,49 @@
+# ALPHA_ABLATION_US 工业级配置
+project_name: "S&P 500 Multi-Model Alpha Research"
+
+universe:
+  # 你在 archive 文件夹下的原始数据路径
+  raw_data_path: "archive/sp500_data.csv"
+  # 处理后的特征文件路径
+  processed_path: "data/factors.csv"
+
+data_range:
+  # 根据你截图显示的 2015-11 开始的数据进行设定
+  start_date: "2016-01-01" 
+  end_date: "2024-12-31"
+  # OOS (Out-of-Sample) 样本外测试集切分点
+  oos_start: "2022-01-01"
+
+models:
+  seed: 42
+  train_split_date: "2022-01-01"
+  model_list: ['linear', 'xgb', 'mlp', 'transformer']
+  linear:
+    lr: 0.01
+    epochs: 50
+    batch_size: 256
+  xgb:
+    n_estimators: 100
+    max_depth: 5
+    learning_rate: 0.1
+  mlp:
+    lr: 0.001
+    epochs: 100
+    batch_size: 128
+    hidden_layers: [64, 32]
+  transformer:
+    lr: 0.0005
+    epochs: 100
+    batch_size: 64
+    n_heads: 4
+    n_layers: 2
+    d_model: 64
+      
+features:
+  # 初始因子池
+  list: ['mom_20', 'rev_5', 'vol_20', 'ma_gap_20']
+  label: 'fwd_ret'
+
+backtest:
+  cost: 0.0010  # 10 bps 单边成本
+  top_n: 10     # 每天买入预测分最高的 10 只股票

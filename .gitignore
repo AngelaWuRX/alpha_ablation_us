@@ -1,0 +1,19 @@
+# Ignore common files and directories
+# Data files (The culprits)
+data/
+archive/
+*.csv
+*.parquet
+
+# Virtual Environment (The other culprit)
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Results and Plots
+results/
+plots/
