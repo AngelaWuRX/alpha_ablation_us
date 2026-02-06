@@ -46,8 +46,6 @@ ALPHA_ABLATION_US/
     ...
     sanity_check.py      
 	entrypoint to run all AI tests
-  ai_tests/
-    README.md            
     test_data_pipeline.py
     test_models.py
     test_backtest.py

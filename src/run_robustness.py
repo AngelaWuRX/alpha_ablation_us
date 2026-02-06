@@ -3,8 +3,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from utils import load_config, set_seed
-from backtest import backtest_topn
-# Import your training functions to re-run with different seeds
+from backtest import backtest_vectorized as backtest_topn
 from models_mlp import run_mlp_model 
 
 def run_robustness_test():
