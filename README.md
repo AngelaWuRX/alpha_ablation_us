@@ -86,24 +86,14 @@ Logic:
 
 Training:
 	1.	Compute daily cross-sectional IC (Spearman rank correlation between each factor and fwd_ret) on the train sample:
-```text
-daily_ic = train_df.groupby("date").apply(
-    lambda x: x[col].rank().corr(x["fwd_ret"].rank())
-)
-ic_values[col] = daily_ic.mean()
-```
 	2.	Stack the mean ICs into a weight vector w (one weight per factor).
 	3.	On the test sample, compute a composite linear score:
 
-```text
-test_df['score'] = test_df[factor_cols].values @ weights
-```
 Output:
 	•	output_path CSV with columns ['date', 'ticker', 'close', 'score', 'fwd_ret'].
 
 Interpretation:
 	•	This is not a generic regression; it’s an IC-weighted factor portfolio.
-It gives you a clean, interpretable linear baseline built from cross-sectional information content.
 
 ### 3.2 MLP
 
@@ -118,7 +108,6 @@ Pipeline:
 	6.	Predict OOS scores on the test set and write to CSV.
 
 This is a pure cross-sectional MLP: each (date, ticker) row is treated independently.
-Temporal structure is not used yet; that’s deliberate and documented as a limitation.
 
 ### 3.3 Transformer (degenerate 1-step TS encoder)
 
@@ -128,11 +117,7 @@ Model class: TS_Transformer
 	•	Embeds factor vector → d_model
 	•	Passes through a nn.TransformerEncoder with n_layers and n_heads
 	•	Takes the last time step and maps to a scalar via fc
-```text
-Current usage:
-	•	The code reshapes each factor vector as a sequence of length 1:
-X_train_t = torch.FloatTensor(X_train).unsqueeze(1)
-```
+
 So this Transformer is effectively a fancy nonlinear map on the factor vector, not a true multi-step time-series model. That’s fine for a first pass, but it’s explicitly noted as a limitation.
 
 The rest mirrors the MLP:
@@ -212,7 +197,7 @@ A few important consequences:
 
 This repo is the base for two “next-step” research directions:
 
-7.1 RL on top of signals
+### 7.1 RL on top of signals
 
 Prototype code (e.g. rl_training/discrete_dqn.py) sets up:
 	•	State: factor/signal vector for a given (date, ticker) or portfolio.
@@ -225,7 +210,7 @@ Baseline comparison:
 	•	Can RL reduce drawdowns or turnover while preserving edge?
 	•	Does it adapt better to regime changes than fixed rules?
 
-7.2 From trees to graphs (stock networks)
+### 7.2 From trees to graphs (stock networks)
 
 XGBoost winning in the first experiment suggests that structure and nonlinear interactions matter.
 The next step is to add structure to the universe itself:
