@@ -1,18 +1,14 @@
-# ALPHA_ABLATION_US 工业级配置
+# ALPHA_ABLATION_USA config file for S&P 500 multi-model alpha research project. This file defines the project settings, data paths, model hyperparameters, and backtesting parameters.
 project_name: "S&P 500 Multi-Model Alpha Research"
 
 universe:
-  # 你在 archive 文件夹下的原始数据路径
   raw_data_path: "archive/sp500_data.csv"
-  # 处理后的特征文件路径
   processed_path: "data/factors.csv"
 
 data_range:
-  # 根据你截图显示的 2015-11 开始的数据进行设定
-  start_date: "2016-01-01" 
-  end_date: "2024-12-31"
-  # OOS (Out-of-Sample) 样本外测试集切分点
-  oos_start: "2022-01-01"
+  start_date: "2016-01" 
+  end_date: "2026-01"
+  oos_start: "2022-01"
 
 models:
   seed: 42
@@ -40,10 +36,9 @@ models:
     d_model: 64
       
 features:
-  # 初始因子池
   list: ['mom_20', 'rev_5', 'vol_20', 'ma_gap_20']
   label: 'fwd_ret'
 
 backtest:
-  cost: 0.0010  # 10 bps 单边成本
-  top_n: 10     # 每天买入预测分最高的 10 只股票
+  cost: 0.0010 
+  top_n: 10    
