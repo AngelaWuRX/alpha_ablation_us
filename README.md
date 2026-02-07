@@ -34,15 +34,19 @@ The main modeling scripts expect a single panel CSV with at least:
 
 ## 2. First experiment results
 
-On the current S&P 500 factor set and time split, the first OOS experiment produced:
+### Out-of-sample performance (2022–2026, after costs)
 
-Model	Sharpe	Total Return	Max Drawdown	Avg Turnover
-Linear	0.2908	+17.84%	−36.29%	60.1%
-MLP	0.0716	−2.32%	−25.27%	0.0%
-Transformer	0.3228	+20.86%	−35.18%	141.4%
-XGBoost	0.4796	+53.50%	−46.25%	99.31%
+| Model        | Sharpe | Total Return | Max Drawdown | Avg Turnover |
+| :----------- | -----: | -----------: | -----------: | -----------: |
+| Linear       | 0.2908 | +17.84%      | −36.29%      | 60.1%        |
+| MLP          | 0.0716 | −2.32%       | −25.27%      | 0.0%         |
+| Transformer  | 0.3228 | +20.86%      | −35.18%      | 141.4%       |
+| **XGBoost ⭐** | **0.4796** | **+53.50%** | −46.25%      | 99.31%       |
 
-Interpretation (no sugar-coating)
+> 🟢 **Best risk/return trade-off:** XGBoost.  
+> 🔴 **Failed baseline:** MLP (negative OOS return and essentially zero turnover).
+
+Interpretation
 	•	Tree-based XGBoost is the clear winner on this factor set:
 	•	Highest Sharpe and total return, despite a relatively high turnover.
 	•	Transformer beats linear but does not beat XGBoost, and trades even more (turnover ≈ 141%).
@@ -56,23 +60,21 @@ This phase is intentionally about comparative signal quality, not overfitted hyp
 Outputs:
 	![Strategy Performace Comparison.png](https://github.com/AngelaWuRX/alpha_ablation_us/blob/0856cd9316502021093d820cebf450a36d1fd5a5/Strategy%20Performace%20Comparison.png)
 
-	[Strategy Performace Comparison](https://github.com/AngelaWuRX/alpha_ablation_us/blob/0856cd9316502021093d820cebf450a36d1fd5a5/Strategy%20Performace%20Comparison.png)
-
 ## 3. Models
 
 All models follow the same basic pattern:
-	1.	Load the panel from data_path (CSV with factors + fwd_ret).
-	2.	Convert date to datetime.
-	3.	Split into train (date < train_split_date) and test/OOS (date ≥ train_split_date).
-	4.	Train on the train window only.
-	5.	Write out OOS scores and realized fwd_ret for each (date, ticker).
 
-Every model writes a file of the form:
+1. Load the panel from `data_path` (CSV with factors + `fwd_ret`).
+2. Convert `date` to `datetime`.
+3. Split into **train** (`date < train_split_date`) and **test/OOS** (`date ≥ train_split_date`).
+4. Train on the **train** window only.
+5. Write out OOS `score` and realized `fwd_ret` for each `(date, ticker)`.
 
+Each model writes a file of the form:
+
+```text
 date, ticker, close, score, fwd_ret
-...
-
-to results/signals_<model>.csv.
+```
 
 ### 3.1 IC-weighted linear baseline
 
@@ -86,18 +88,17 @@ Logic:
 
 Training:
 	1.	Compute daily cross-sectional IC (Spearman rank correlation between each factor and fwd_ret) on the train sample:
-
-daily_ic = train_df.groupby('date').apply(
-    lambda x: x[col].rank().corr(x['fwd_ret'].rank())
+```text
+daily_ic = train_df.groupby("date").apply(
+    lambda x: x[col].rank().corr(x["fwd_ret"].rank())
 )
 ic_values[col] = daily_ic.mean()
-
-
+```
 	2.	Stack the mean ICs into a weight vector w (one weight per factor).
 	3.	On the test sample, compute a composite linear score:
-
+```text
 test_df['score'] = test_df[factor_cols].values @ weights
-
+```
 Output:
 	•	output_path CSV with columns ['date', 'ticker', 'close', 'score', 'fwd_ret'].
 
@@ -128,12 +129,11 @@ Model class: TS_Transformer
 	•	Embeds factor vector → d_model
 	•	Passes through a nn.TransformerEncoder with n_layers and n_heads
 	•	Takes the last time step and maps to a scalar via fc
-
+```text
 Current usage:
 	•	The code reshapes each factor vector as a sequence of length 1:
-
 X_train_t = torch.FloatTensor(X_train).unsqueeze(1)
-
+```
 So this Transformer is effectively a fancy nonlinear map on the factor vector, not a true multi-step time-series model. That’s fine for a first pass, but it’s explicitly noted as a limitation.
 
 The rest mirrors the MLP:
