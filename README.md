@@ -46,18 +46,16 @@ The main modeling scripts expect a single panel CSV with at least:
 > 🟢 **Best risk/return trade-off:** XGBoost.  
 > 🔴 **Failed baseline:** MLP (negative OOS return and essentially zero turnover).
 
-Interpretation
-	•	Tree-based XGBoost is the clear winner on this factor set:
-	•	Highest Sharpe and total return, despite a relatively high turnover.
-	•	Transformer beats linear but does not beat XGBoost, and trades even more (turnover ≈ 141%).
-	•	MLP collapsed:
-	•	Negative OOS return and essentially zero turnover — more a sign of training/regularization issues than alpha.
-	•	Turnover and costs are first-order effects:
-	•	Naively comparing raw returns would miss how sensitive some models are to trading frictions.
+Interpretation: 
+- Tree-based XGBoost is the clear winner on this factor set:
+- Highest Sharpe and total return, despite a relatively high turnover.
+- Transformer beats linear but does not beat XGBoost, and trades even more (turnover ≈ 141%).
+- MLP collapsed:
+	- Negative OOS return and essentially zero turnover — more a sign of training/regularization issues than alpha.
+- Turnover and costs are first-order effects:
+	- Naively comparing raw returns would miss how sensitive some models are to trading frictions.
 
-This phase is intentionally about comparative signal quality, not overfitted hyperparameter sweeps.
-
-Outputs:
+Output:
 	![Strategy Performace Comparison.png](https://github.com/AngelaWuRX/alpha_ablation_us/blob/0856cd9316502021093d820cebf450a36d1fd5a5/Strategy%20Performace%20Comparison.png)
 
 ## 3. Models
