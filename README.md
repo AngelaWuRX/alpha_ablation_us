@@ -94,6 +94,7 @@ ic_values[col] = daily_ic.mean()
 ```
 	2.	Stack the mean ICs into a weight vector w (one weight per factor).
 	3.	On the test sample, compute a composite linear score:
+
 ```text
 test_df['score'] = test_df[factor_cols].values @ weights
 ```
