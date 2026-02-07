@@ -54,7 +54,7 @@ Interpretation (no sugar-coating)
 This phase is intentionally about comparative signal quality, not overfitted hyperparameter sweeps.
 
 Outputs:
-	•(Strategy Performace Comparison.png)[Strategy Performace Comparison.png]
+	•[Strategy Performace Comparison.png](https://github.com/AngelaWuRX/alpha_ablation_us/blob/0856cd9316502021093d820cebf450a36d1fd5a5/Strategy%20Performace%20Comparison.png)
 
 ## 3. Models
 
