@@ -2,7 +2,7 @@
 
 This repo implements an end-to-end **equity signal research pipeline** on an S&P 500 universe:
 
-- raw prices → factor panel → `1`-day forward-return labels  
+- raw prices → factor panel → `1-day` forward-return labels  
 - model zoo: **IC-weighted linear baseline**, **MLP**, **XGBoost**, **Transformer**  
 - cost-aware long–short backtest with Sharpe / total return / max drawdown / turnover  
 - hooks for robustness tests, alpha ablation, and **RL / graph-based** extensions
@@ -17,11 +17,11 @@ The core question:
 
 - **Universe:** S&P 500 constituents (Kaggle dataset)
 - **Frequency:** daily bars
-- **Date range:** 2016-01-01 – ~2026-01 (full sample from the Kaggle file)
-- **Label:** `1`-day forward return, stored as `fwd_ret`
+- **Date range:** 2016-01-01 – 2026-01-16
+- **Label:** `1-day` forward return, stored as `fwd_ret`
 - **Split (time-based):**
   - Train / validation: **2016-01-01 – 2021-12-31**
-  - Out-of-sample (OOS): **2022-01-01 – ~2026-01**
+  - Out-of-sample (OOS): **2022-01-01 – 2026-01-16**
 
 The time split is controlled by `config.yaml`:
 
