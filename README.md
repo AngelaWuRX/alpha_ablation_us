@@ -32,8 +32,31 @@ The main modeling scripts expect a single panel CSV with at least:
 	•	factor columns from features.list
 	•	fwd_ret (forward return label)
 
+## 2. First experiment results (OOS 2022–~2026)
 
-## 2. Models
+On the current S&P 500 factor set and time split, the first OOS experiment produced:
+
+Model	Sharpe	Total Return	Max Drawdown	Avg Turnover
+Linear	0.2908	+17.84%	−36.29%	60.1%
+MLP	0.0716	−2.32%	−25.27%	0.0%
+Transformer	0.3228	+20.86%	−35.18%	141.4%
+XGBoost	0.4796	+53.50%	−46.25%	99.31%
+
+Interpretation (no sugar-coating)
+	•	Tree-based XGBoost is the clear winner on this factor set:
+	•	Highest Sharpe and total return, despite a relatively high turnover.
+	•	Transformer beats linear but does not beat XGBoost, and trades even more (turnover ≈ 141%).
+	•	MLP collapsed:
+	•	Negative OOS return and essentially zero turnover — more a sign of training/regularization issues than alpha.
+	•	Turnover and costs are first-order effects:
+	•	Naively comparing raw returns would miss how sensitive some models are to trading frictions.
+
+This phase is intentionally about comparative signal quality, not overfitted hyperparameter sweeps.
+
+Outputs:
+	•[Strategy Performace Comparison.png](Strategy Performace Comparison.png)
+
+## 3. Models
 
 All models follow the same basic pattern:
 	1.	Load the panel from data_path (CSV with factors + fwd_ret).
@@ -49,7 +72,7 @@ date, ticker, close, score, fwd_ret
 
 to results/signals_<model>.csv.
 
-2.1 IC-weighted linear baseline
+### 3.1 IC-weighted linear baseline
 
 Implementation: run_linear_baseline(data_path, output_path)
 
@@ -80,7 +103,7 @@ Interpretation:
 	•	This is not a generic regression; it’s an IC-weighted factor portfolio.
 It gives you a clean, interpretable linear baseline built from cross-sectional information content.
 
-2.2 MLP (Dynamic feedforward network)
+### 3.2 MLP
 
 Implementation: run_mlp_model(data_path, output_path)
 
@@ -95,7 +118,7 @@ Pipeline:
 This is a pure cross-sectional MLP: each (date, ticker) row is treated independently.
 Temporal structure is not used yet; that’s deliberate and documented as a limitation.
 
-2.3 Transformer (degenerate 1-step TS encoder)
+### 3.3 Transformer (degenerate 1-step TS encoder)
 
 Implementation: run_transformer_model(data_path, output_path)
 
@@ -117,7 +140,7 @@ The rest mirrors the MLP:
 	•	MSE loss, Adam optimizer
 	•	OOS scores written to CSV.
 
-2.4 XGBoost (tree-based nonlinear model)
+### 3.4 XGBoost (tree-based nonlinear model)
 
 Implementation: run_xgb_model(data_path, output_path)
 	•	Hyperparameters come from config['models']['xgb']:
@@ -133,7 +156,7 @@ Pipeline:
 
 This model is where the nonlinear interactions in factor space really show up.
 
-## 3. Backtest & evaluation
+## 4. Backtest & evaluation
 
 Given a signals file, the backtest:
 	1.	For each day, ranks stocks by score.
@@ -146,33 +169,9 @@ src/summary_backtest.py aggregates these into a summary table:
 	•	Total return
 	•	Max drawdown (MDD)
 	•	Avg daily turnover
-	•	(optionally IC metrics)
+	•	IC metrics
 
-## 4. First experiment results (OOS 2022–~2026)
-
-On the current S&P 500 factor set and time split, the first OOS experiment produced:
-
-Model	Sharpe	Total Return	Max Drawdown	Avg Turnover
-Linear	0.2908	+17.84%	−36.29%	60.1%
-MLP	0.0716	−2.32%	−25.27%	0.0%
-Transformer	0.3228	+20.86%	−35.18%	141.4%
-XGBoost	0.4796	+53.50%	−46.25%	99.31%
-
-Interpretation (no sugar-coating)
-	•	Tree-based XGBoost is the clear winner on this factor set:
-	•	Highest Sharpe and total return, despite a relatively high turnover.
-	•	Transformer beats linear but does not beat XGBoost, and trades even more (turnover ≈ 141%).
-	•	MLP collapsed:
-	•	Negative OOS return and essentially zero turnover — more a sign of training/regularization issues than alpha.
-	•	Turnover and costs are first-order effects:
-	•	Naively comparing raw returns would miss how sensitive some models are to trading frictions.
-
-This phase is intentionally about comparative signal quality, not overfitted hyperparameter sweeps.
-
-Outputs:
-	•	
-
-## 5. Robustness & alpha ablation (WIP)
+## 5. Robustness & alpha ablation
 
 Planned robustness work (wired in run_robustness.py, alpha_ablation_improved.py):
 	1.	Factor-group ablation
@@ -187,10 +186,6 @@ Planned robustness work (wired in run_robustness.py, alpha_ablation_improved.py)
 	3.	Synthetic / AI-generated factors (optional)
 	•	Add synthetic features from model-generated transforms.
 	•	Check whether they create real out-of-sample edge or just overfit the train window.
-
-Outputs:
-	•	results/robustness_report.csv
-	•	results/robustness_plots.png
 
 ## 6. Runtime & efficiency
 
