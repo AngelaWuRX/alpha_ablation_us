@@ -32,7 +32,7 @@ The main modeling scripts expect a single panel CSV with at least:
 	•	factor columns from features.list
 	•	fwd_ret (forward return label)
 
-## 2. First experiment results (OOS 2022–~2026)
+## 2. First experiment results
 
 On the current S&P 500 factor set and time split, the first OOS experiment produced:
 
@@ -54,7 +54,7 @@ Interpretation (no sugar-coating)
 This phase is intentionally about comparative signal quality, not overfitted hyperparameter sweeps.
 
 Outputs:
-	•[Strategy Performace Comparison.png](Strategy Performace Comparison.png)
+	•(Strategy Performace Comparison.png)[Strategy Performace Comparison.png]
 
 ## 3. Models
 
