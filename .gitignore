@@ -1,11 +1,10 @@
-# Ignore common files and directories
-# Data files (The culprits)
+# Data files
 data/
 archive/
 *.csv
 *.parquet
 
-# Virtual Environment (The other culprit)
+# Virtual env
 .venv/
 venv/
 env/
@@ -13,7 +12,14 @@ env/
 # Python cache
 __pycache__/
 *.py[cod]
+.pytest_cache/
 
-# Results and Plots
+# Results and plots
 results/
 plots/
+
+# OS / editor junk
+.DS_Store
+**/.DS_Store
+.vscode/
+.idea/
