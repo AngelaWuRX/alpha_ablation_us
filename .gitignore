@@ -74,3 +74,4 @@ checkpoints/
 *.pth
 *.ckpt
 *.pkl
+.DS_Store
