@@ -1,19 +1,76 @@
-# Ignore common files and directories
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
 # Data files (The culprits)
 data/
 archive/
 *.csv
 *.parquet
+*.h5
+*.hdf5
+*.feather
 
 # Virtual Environment (The other culprit)
 .venv/
 venv/
 env/
+ENV/
 
 # Python cache
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+
+# Python tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+*.egg-info/
+build/
+dist/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# IDE / editor
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
 
 # Results and Plots
 results/
 plots/
+
+# ML / RL artifacts
+wandb/
+mlruns/
+runs/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.pkl
